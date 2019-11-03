@@ -1,35 +1,7 @@
-/**************************************************************
- *
- * This sketch connects to a website and downloads a page.
- * It can be used to perform HTTP/RESTful API calls.
- *
- * For this example, you need to install ArduinoHttpClient library:
- *   https://github.com/arduino-libraries/ArduinoHttpClient
- *   or from http://librarymanager/all#ArduinoHttpClient
- *
- * TinyGSM Getting Started guide:
- *   https://tiny.cc/tinygsm-readme
- *
- * For more HTTP API examples, see ArduinoHttpClient library
- *
- * NOTE: This example may NOT work with the XBee because the
- * HttpClient library does not empty to serial buffer fast enough
- * and the buffer overflow causes the HttpClient library to stall.
- * Boards with faster processors may work, 8MHz boards will not.
- **************************************************************/
-
-// Select your modem:
 #define TINY_GSM_MODEM_SIM808
-
-
-// Set serial for debug console (to the Serial Monitor, default speed 115200)
 #define SerialMon Serial
-
-// Set serial for AT commands (to the module)
-// Use Hardware Serial on Mega, Leonardo, Micro
 #define SerialAT Serial1
 
-// or Software Serial on Uno, Nano
 #include <SoftwareSerial.h>
 SoftwareSerial SerialAT(11,10); // RX, TX
 
@@ -71,19 +43,7 @@ const int  port = 80;
 #include <TinyGsmClient.h>
 #include <ArduinoHttpClient.h>
 
-// Just in case someone defined the wrong thing..
-#if TINY_GSM_USE_GPRS && not defined TINY_GSM_MODEM_HAS_GPRS
-#undef TINY_GSM_USE_GPRS
-#undef TINY_GSM_USE_WIFI
-#define TINY_GSM_USE_GPRS false
-#define TINY_GSM_USE_WIFI true
-#endif
-#if TINY_GSM_USE_WIFI && not defined TINY_GSM_MODEM_HAS_WIFI
-#undef TINY_GSM_USE_GPRS
-#undef TINY_GSM_USE_WIFI
-#define TINY_GSM_USE_GPRS true
-#define TINY_GSM_USE_WIFI false
-#endif
+
 
 #ifdef DUMP_AT_COMMANDS
   #include <StreamDebugger.h>
@@ -101,14 +61,8 @@ void setup() {
   SerialMon.begin(115200);
   delay(10);
 
-  // !!!!!!!!!!!
-  // Set your reset, enable, power pins here
-  // !!!!!!!!!!!
-
   SerialMon.println("Wait...");
 
-  // Set GSM module baud rate
-  // TinyGsmAutoBaud(SerialAT,GSM_AUTOBAUD_MIN,GSM_AUTOBAUD_MAX);
   SerialAT.begin(9600);
   delay(3000);
 
@@ -200,10 +154,7 @@ void loop() {
   http.stop();
   SerialMon.println(F("Server disconnected"));
 
-#if TINY_GSM_USE_WIFI
-    modem.networkDisconnect();
-    SerialMon.println(F("WiFi disconnected"));
-#endif
+
 #if TINY_GSM_USE_GPRS
     modem.gprsDisconnect();
     SerialMon.println(F("GPRS disconnected"));
